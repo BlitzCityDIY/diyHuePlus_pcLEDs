@@ -1,7 +1,7 @@
 //Code adapted from Adafruit_NeoPixel Library Example sketches, 
 //MSGEQ7 example code
 //Jeremy Blum adafruit LED Arduino lesson #14 (line 249 below)
-//& Adafruit example code found on the forum by adafruit_support_rick
+//& Adafruit example code to create neopixel arrays found on the forum by adafruit_support_rick
 
 #include <Adafruit_NeoPixel.h>
 #ifdef __AVR__
