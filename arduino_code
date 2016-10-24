@@ -1,0 +1,278 @@
+//Code adapted from Adafruit_NeoPixel Library Example sketches, 
+//MSGEQ7 example code
+//Jeremy Blum adafruit LED Arduino lesson #14 (line 249 below)
+//& Adafruit example code found on the forum by adafruit_support_rick
+
+#include <Adafruit_NeoPixel.h>
+#ifdef __AVR__
+  #include <avr/power.h>
+#endif                              //opens Neopixel library
+
+#define PIN 6 //NeoPixel Pin
+
+
+
+int analogPin = 0; // read from multiplexer using analog input 0
+int strobePin = 10; // strobe is attached to digital pin 2
+int resetPin = 11; // reset is attached to digital pin 3
+int spectrumValue[7]; // to hold a2d values
+int spectrumRead = analogRead(analogPin);
+int PWMvalue = spectrumRead;
+
+
+const int length = 60;
+//const int hz = length / 7;
+
+
+int band1[] = {0}; //pixel for 63Hz
+int band2[] = {1}; //pixel for 160Hz
+int band3[] = {2}; //pixel for 400Hz
+int band4[] = {3};  //pixel for 1kHz
+int band5[] = {4};  //pixel for 2.5kHz
+int band6[] = {5}; //pixel for 6.25kHz
+int band7[] = {6}; //pixel for 16kHz
+
+int bandA1[] = {7};
+int bandA2[] = {8};
+int bandA3[] = {9};
+int bandA4[] = {10};
+int bandA5[] = {11};
+int bandA6[] = {12};
+int bandA7[] = {13};
+
+int bandB1[] = {14};
+int bandB2[] = {15};
+int bandB3[] = {16};
+int bandB4[] = {17};
+int bandB5[] = {18};
+int bandB6[] = {19};
+int bandB7[] = {20};
+
+int bandC1[] = {21};
+int bandC2[] = {22};
+int bandC3[] = {23};
+int bandC4[] = {24};
+int bandC5[] = {25};
+int bandC6[] = {26};
+int bandC7[] = {27};
+
+int bandD1[] = {28};
+int bandD2[] = {29};
+int bandD3[] = {30};
+int bandD4[] = {31};
+int bandD5[] = {32};
+int bandD6[] = {33};
+int bandD7[] = {34};
+
+int bandE1[] = {35};
+int bandE2[] = {36};
+int bandE3[] = {37};
+int bandE4[] = {38};
+int bandE5[] = {39};
+int bandE6[] = {40};
+int bandE7[] = {41};
+
+int bandF1[] = {42};
+int bandF2[] = {43};
+int bandF3[] = {44};
+int bandF4[] = {45};
+int bandF5[] = {46};
+int bandF6[] = {47};
+int bandF7[] = {48};
+
+int bandG1[] = {49};
+int bandG2[] = {50};
+int bandG3[] = {51};
+int bandG4[] = {52};
+int bandG5[] = {53};
+int bandG6[] = {54};
+int bandG7[] = {55};
+
+int bandH1[] = {56};
+int bandH2[] = {57};
+int bandH3[] = {58};
+int bandH4[] = {59};
+
+
+//alternates between 8 and 9 pixels to get 60 total
+int* bands[] = {      //array of the bands
+  band1,
+  band2,
+  band3,
+  band4,
+  band5,
+  band6,
+  band7
+};
+
+int* bandsA[] = {
+  bandA1,
+  bandA2,
+  bandA3,
+  bandA4,
+  bandA5,
+  bandA6,
+  bandA7
+};
+
+int* bandsB[] = {
+  bandB1,
+  bandB2,
+  bandB3,
+  bandB4,
+  bandB5,
+  bandB6,
+  bandB7
+};
+
+int* bandsC[] = {
+  bandC1,
+  bandC2,
+  bandC3,
+  bandC4,
+  bandC5,
+  bandC6,
+  bandC7
+};
+
+int* bandsD[] = {
+  bandD1,
+  bandD2,
+  bandD3,
+  bandD4,
+  bandD5,
+  bandD6,
+  bandD7
+};
+
+int* bandsE[] = {
+  bandE1,
+  bandE2,
+  bandE3,
+  bandE4,
+  bandE5,
+  bandE6,
+  bandE7
+};
+
+int* bandsF[] = {
+  bandF1,
+  bandF2,
+  bandF3,
+  bandF4,
+  bandF5,
+  bandF6,
+  bandF7
+};
+
+int* bandsG[] = {
+  bandG1,
+  bandG2,
+  bandG3,
+  bandG4,
+  bandG5,
+  bandG6,
+  bandG7
+};
+
+int* bandsH[] = {
+  bandH1,
+  bandH2,
+  bandH3,
+  bandH4
+};
+
+//-----------------------------------------------------
+
+// Parameter 1 = number of pixels in strip
+// Parameter 2 = Arduino pin number (most are valid)
+// Parameter 3 = pixel type flags, add together as needed:
+//   NEO_KHZ800  800 KHz bitstream (most NeoPixel products w/WS2812 LEDs)
+//   NEO_KHZ400  400 KHz (classic 'v1' (not v2) FLORA pixels, WS2811 drivers)
+//   NEO_GRB     Pixels are wired for GRB bitstream (most NeoPixel products)
+//   NEO_RGB     Pixels are wired for RGB bitstream (v1 FLORA pixels, not v2)
+//   NEO_RGBW    Pixels are wired for RGBW bitstream (NeoPixel RGBW products)
+
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(length, PIN, NEO_GRB + NEO_KHZ800); //last bit of pixel initialization
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(resetPin,OUTPUT);
+  pinMode(strobePin,OUTPUT); //outputs to get digital data
+  digitalWrite(resetPin, LOW);
+  digitalWrite(strobePin, HIGH); //puts pins in default states
+
+
+
+  /*for (int i = 0; i < hz; i ++) {
+    band1[i]; //= {0, 1, 2, 3, 4, 5, 6, 7, 8, -1}; //array of pixels for 63Hz: 9
+    band2[i]; //= {9, 10, 11, 12, 13, 14, 15, 16, -1}; //array of pixels for 160Hz: 8
+    band3[i]; //= {17, 18, 19, 20, 21, 22, 23, 24, 25, -1}; //array of pixels for 400Hz: 9
+    band4[i]; //= {26, 27, 28, 29, 30, 31, 32, 33, -1};  //array of pixels for 1kHz: 8
+    band5[i]; //= {34, 35, 36, 37, 38, 39, 40, 41, 42, -1};  //array of pixels for 2.5kHz: 9
+    band6[i]; //= {43, 44, 45, 46, 47, 48, 49, 50, -1}; //array of pixels for 6.25kHz: 8
+    band7[i]; 
+  } */
+
+strip.setBrightness(60);
+
+
+
+  strip.begin();
+  
+  strip.show(); //initializes pixels
+
+}
+
+void loop() {
+
+
+    digitalWrite(resetPin, HIGH);
+    delay(5);
+    digitalWrite(resetPin, LOW);
+
+
+
+  
+ for (int i = 0; i < 7; i++) //spectrumRead; portion of MSGEQ7 code to read data
+ {
+ digitalWrite(strobePin, LOW);
+ delayMicroseconds(35); // to allow the output to settle
+
+
+ 
+    int PWMvalue = map(spectrumRead, 0, 1024, 0, 255);  // scale analogRead's value to Write's 255 max
+        if (PWMvalue < 100){
+            PWMvalue = PWMvalue / 2;    }    // bit of a noise filter, so the LEDs turn off at low levels
+delayMicroseconds(30);
+
+byte hue = constrain(map(analogRead(PWMvalue), 0, 400, 0, 100), 0, 255);
+
+if (PWMvalue > 5) {
+ 
+strip.setPixelColor(*bands[i], strip.Color(80, 0, 255 + hue));
+strip.setPixelColor(*bandsA[i], strip.Color(80, 0, 255 + hue));
+strip.setPixelColor(*bandsB[i], strip.Color(80, 0, 255 + hue));
+strip.setPixelColor(*bandsC[i], strip.Color(80, 0, 255 + hue));
+strip.setPixelColor(*bandsD[i], strip.Color(80, 0, 255 + hue));
+strip.setPixelColor(*bandsE[i], strip.Color(80, 0, 255 + hue));
+strip.setPixelColor(*bandsF[i], strip.Color(80, 0, 255 + hue));
+strip.setPixelColor(*bandsG[i], strip.Color(80, 0, 255 + hue));
+}
+else{
+
+  strip.setPixelColor(strip.Color(80, 0, 255));
+  strip.show();
+}
+
+delayMicroseconds(30);
+
+digitalWrite(strobePin, HIGH);
+
+ }
+
+
+     strip.show();
+
+     delay(5);
+     }
