@@ -1,7 +1,7 @@
-//Code adapted from Adafruit_NeoPixel Library Example sketches, 
-//MSGEQ7 example code
-//Jeremy Blum adafruit LED Arduino lesson #14 (line 249 below)
-//& Adafruit example code to create neopixel arrays found on the forum by adafruit_support_rick
+
+//Code adapated from Adafruit_NeoPixel Library Example sketches, 
+//MSGEQ7 example serial read code from JSkoba 
+//& Adafruit example code found on the forum by adafruit_support_rick
 
 #include <Adafruit_NeoPixel.h>
 #ifdef __AVR__
@@ -248,7 +248,7 @@ delayMicroseconds(30);
 
 byte hue = constrain(map(analogRead(PWMvalue), 0, 400, 0, 100), 0, 255);
 
-if (PWMvalue > 5) {
+
  
 strip.setPixelColor(*bands[i], strip.Color(80, 0, 255 + hue));
 strip.setPixelColor(*bandsA[i], strip.Color(80, 0, 255 + hue));
@@ -259,17 +259,13 @@ strip.setPixelColor(*bandsE[i], strip.Color(80, 0, 255 + hue));
 strip.setPixelColor(*bandsF[i], strip.Color(80, 0, 255 + hue));
 strip.setPixelColor(*bandsG[i], strip.Color(80, 0, 255 + hue));
 }
-else{
 
-  strip.setPixelColor(strip.Color(80, 0, 255));
-  strip.show();
-}
 
 delayMicroseconds(30);
 
 digitalWrite(strobePin, HIGH);
 
- }
+ 
 
 
      strip.show();
