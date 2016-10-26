@@ -1,4 +1,5 @@
 
+
 //Code adapated from Adafruit_NeoPixel Library Example sketches, 
 //MSGEQ7 example serial read code from JSkoba 
 //& Adafruit example code found on the forum by adafruit_support_rick
@@ -242,8 +243,8 @@ void loop() {
 
  
     int PWMvalue = map(spectrumRead, 0, 1024, 0, 255);  // scale analogRead's value to Write's 255 max
-        if (PWMvalue < 100){
-            PWMvalue = PWMvalue / 2;    }    // bit of a noise filter, so the LEDs turn off at low levels
+        if (PWMvalue < 50)
+            PWMvalue = PWMvalue / 2;        // bit of a noise filter, so the LEDs turn off at low levels
 delayMicroseconds(30);
 
 byte hue = constrain(map(analogRead(PWMvalue), 0, 400, 0, 100), 0, 255);
@@ -258,16 +259,14 @@ strip.setPixelColor(*bandsD[i], strip.Color(80, 0, 255 + hue));
 strip.setPixelColor(*bandsE[i], strip.Color(80, 0, 255 + hue));
 strip.setPixelColor(*bandsF[i], strip.Color(80, 0, 255 + hue));
 strip.setPixelColor(*bandsG[i], strip.Color(80, 0, 255 + hue));
-}
+
 
 
 delayMicroseconds(30);
 
 digitalWrite(strobePin, HIGH);
 
- 
-
-
+}
      strip.show();
 
      delay(5);
