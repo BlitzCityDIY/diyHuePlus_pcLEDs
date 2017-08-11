@@ -1,15 +1,15 @@
 
 
-//Code adapated from Adafruit_NeoPixel Library Example sketches, 
+//Code adapted from Adafruit_NeoPixel Library Example sketches, 
 //MSGEQ7 example serial read code from JSkoba 
-//& Adafruit example code found on the forum by adafruit_support_rick
+//& Adafruit example code for NeoPixel arrays found on the forum by adafruit_support_rick
 
 #include <Adafruit_NeoPixel.h>
 #ifdef __AVR__
   #include <avr/power.h>
 #endif                              //opens Neopixel library
 
-#define PIN 6 //NeoPixel Pin
+#define PIN 4 //NeoPixel Pin
 
 
 
@@ -22,7 +22,6 @@ int PWMvalue = spectrumRead;
 
 
 const int length = 60;
-//const int hz = length / 7;
 
 
 int band1[] = {0}; //pixel for 63Hz
@@ -203,21 +202,7 @@ void setup() {
   digitalWrite(resetPin, LOW);
   digitalWrite(strobePin, HIGH); //puts pins in default states
 
-
-
-  /*for (int i = 0; i < hz; i ++) {
-    band1[i]; //= {0, 1, 2, 3, 4, 5, 6, 7, 8, -1}; //array of pixels for 63Hz: 9
-    band2[i]; //= {9, 10, 11, 12, 13, 14, 15, 16, -1}; //array of pixels for 160Hz: 8
-    band3[i]; //= {17, 18, 19, 20, 21, 22, 23, 24, 25, -1}; //array of pixels for 400Hz: 9
-    band4[i]; //= {26, 27, 28, 29, 30, 31, 32, 33, -1};  //array of pixels for 1kHz: 8
-    band5[i]; //= {34, 35, 36, 37, 38, 39, 40, 41, 42, -1};  //array of pixels for 2.5kHz: 9
-    band6[i]; //= {43, 44, 45, 46, 47, 48, 49, 50, -1}; //array of pixels for 6.25kHz: 8
-    band7[i]; 
-  } */
-
 strip.setBrightness(60);
-
-
 
   strip.begin();
   
@@ -225,32 +210,25 @@ strip.setBrightness(60);
 
 }
 
-void loop() {
 
+void loop() {
 
     digitalWrite(resetPin, HIGH);
     delay(5);
     digitalWrite(resetPin, LOW);
-
-
-
   
  for (int i = 0; i < 7; i++) //spectrumRead; portion of MSGEQ7 code to read data
  {
  digitalWrite(strobePin, LOW);
  delayMicroseconds(35); // to allow the output to settle
 
-
- 
     int PWMvalue = map(spectrumRead, 0, 1024, 0, 255);  // scale analogRead's value to Write's 255 max
         if (PWMvalue < 50)
             PWMvalue = PWMvalue / 2;        // bit of a noise filter, so the LEDs turn off at low levels
 delayMicroseconds(30);
 
-byte hue = constrain(map(analogRead(PWMvalue), 0, 400, 0, 100), 0, 255);
+byte hue = constrain(map(analogRead(PWMvalue), 0, 400, 0, 100), 0, 255); //analog value to map to LED color
 
-
- 
 strip.setPixelColor(*bands[i], strip.Color(80, 0, 255 + hue));
 strip.setPixelColor(*bandsA[i], strip.Color(80, 0, 255 + hue));
 strip.setPixelColor(*bandsB[i], strip.Color(80, 0, 255 + hue));
@@ -259,8 +237,6 @@ strip.setPixelColor(*bandsD[i], strip.Color(80, 0, 255 + hue));
 strip.setPixelColor(*bandsE[i], strip.Color(80, 0, 255 + hue));
 strip.setPixelColor(*bandsF[i], strip.Color(80, 0, 255 + hue));
 strip.setPixelColor(*bandsG[i], strip.Color(80, 0, 255 + hue));
-
-
 
 delayMicroseconds(30);
 
